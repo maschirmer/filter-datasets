@@ -15,6 +15,9 @@ https://www.kaggle.com/datasets/patjob/articlescrape
 RUN CONTAINER: 
 srun --mem=100g --container-image=./build_ds_1.sqsh --container-name="build_dataset" --container-mounts=./Datasets:/Datasets --container-writable --pty bash -i
 
+download container:
+
+srun --mem=5g --container-image=./download.sqsh --container-name="download_files" --container-mounts=./Datasets:/Datasets --container-writable --pty bash -i
 
 SLURM IP ADRESS = 141.54.132.206
 
