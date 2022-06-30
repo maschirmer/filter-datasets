@@ -6,6 +6,7 @@ import re
 
 lang = []
 
+PATH = "$HOME/Datasets/"
 
 def getLang(text):
     try:
@@ -22,7 +23,8 @@ def collectres(lang):
 
 if __name__ == "__main__":
 
-    d = pd.read_csv("reddit_raw_texts.csv")
+    d = pd.read_csv(PATH + "reddit_may_2015/reddit_raw_texts.csv")
+    
     d.drop(["Unnamed: 0"], axis=1, inplace=True)
 
 
@@ -71,4 +73,4 @@ if __name__ == "__main__":
     df = pd.DataFrame(df_dict)
     df = df[ df["language"] == "en" ]
 
-    df.to_csv("reddit_texts_language.csv")
+    df.to_csv(PATH + "temp_ds/" + "reddit_texts_language.csv")

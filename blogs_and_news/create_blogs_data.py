@@ -2,13 +2,13 @@ import pandas as pd
 import re
 
 
-PATH = "corpus.csv"
+FILEPATH = "$HOME/Datasets/"
 
 
 if __name__ == "__main__":
     
     
-    df = pd.read_csv(PATH, encoding_errors="replace")
+    df = pd.read_csv(FILEPATH + "blogs_and_news/corpus.csv", encoding_errors="replace")
     lbody = list(df["body"])
 
     # split strings to sentences by "!?."
@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
 
     # save to csv
-    sen.to_csv("blogs_news_single_sentences.csv", encoding="utf8")
+    sen.to_csv(FILEPATH + "temp_ds/blogs_news_single_sentences.csv", encoding="utf8")
 
 
 

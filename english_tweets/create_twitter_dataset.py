@@ -6,7 +6,7 @@ import os
 import multiprocessing
 import re
 
-PATH_TO_DATA = "$HOME/Datasets/twitter_stream_2020_02_01"
+PATH_TO_DATA = "$HOME/Datasets/tweets_eng/"
 
 results = []
 
@@ -131,7 +131,7 @@ if __name__ == '__main__':
     
     clean_df = pd.DataFrame(cleaned_list, columns=["text"])
 
-    clean_df.to_csv("./english_tweets/clean_tweets_eng.csv")
+    clean_df.to_csv("$HOME/Datasets/temp_ds/clean_tweets_eng.csv")
 
 
 ########  End of Programme   #########
