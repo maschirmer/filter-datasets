@@ -3,6 +3,7 @@ from langdetect import detect
 from multiprocessing import Pool
 import multiprocessing
 import re
+import gc
 
 lang = []
 
@@ -54,11 +55,15 @@ if __name__ == "__main__":
 
     print("no of cpus to use: " + str(multiprocessing.cpu_count()))
     
+    n = len(body)
+
     pool = Pool(processes=multiprocessing.cpu_count())
 
     for i in range(len(body)):
         pool.apply_async(getLang, args=(body[i], ), callback=collectres)
-        print(i)
+        print("processed: " + str(round((i/n) * 100), 2))
+        if i%100000==0:
+            gc.collect()
     
     pool.close()
     pool.join()
