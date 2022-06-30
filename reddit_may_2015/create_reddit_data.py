@@ -53,6 +53,8 @@ if __name__ == "__main__":
     # body = list(d["body"])
     body = split_body
 
+    cpus = multiprocessing.cpu_count()
+
     print("no of cpus to use: " + str(multiprocessing.cpu_count()))
     
     n = len(body)
@@ -61,8 +63,10 @@ if __name__ == "__main__":
 
     for i in range(len(body)):
         pool.apply_async(getLang, args=(body[i], ), callback=collectres)
-        print("processed: " + str(round((i/n) * 100), 2))
+        
         if i%100000==0:
+            print("CPUS: " + str(cpus))
+            print("processed: " + str(round((i/n) * 100), 2))
             gc.collect()
     
     pool.close()
