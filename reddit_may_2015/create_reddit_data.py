@@ -6,7 +6,7 @@ import re
 
 lang = []
 
-PATH = "$HOME/Datasets/"
+PATH = "~/Datasets/"
 
 def getLang(text):
     try:

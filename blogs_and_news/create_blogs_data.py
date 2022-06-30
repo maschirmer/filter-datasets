@@ -2,7 +2,7 @@ import pandas as pd
 import re
 
 
-FILEPATH = "$HOME/Datasets/"
+FILEPATH = "~/Datasets/"
 
 
 if __name__ == "__main__":
