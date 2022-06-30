@@ -12,7 +12,9 @@ https://www.kaggle.com/datasets/kaggle/reddit-comments-may-2015
 
 https://www.kaggle.com/datasets/patjob/articlescrape
 
-RUN CONTAINER: srun --mem=5g --container-image=ds_cont_ubuntu.sqsh --container-name="dscont03" --container-writable --pty bash -i
+RUN CONTAINER: 
+srun --mem=100g --container-image=./build_ds_1.sqsh --container-name="build_dataset" --container-mounts=./Datasets:/Datasets --container-writable --pty bash -i
+
 
 SLURM IP ADRESS = 141.54.132.206
 
