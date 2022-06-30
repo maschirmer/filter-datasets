@@ -66,7 +66,7 @@ if __name__ == "__main__":
         
         if i%100000==0:
             print("CPUS: " + str(cpus))
-            print("processed: " + str(round((i/n) * 100), 2))
+            print("processed: " + str(round((i/n) * 100, 2)))
             gc.collect()
     
     pool.close()
