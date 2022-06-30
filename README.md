@@ -102,9 +102,15 @@ gammaweb usage:
 - import container from registry:
   - import as sqsh file!
   - instantiate from sqsh file with container-image = ./imagename.sqsh
+  - srun --mem=32g enroot import --output build_ds_1.sqsh docker://ghcr.io#maschirmer/filter-datasets:main
+
+
 - execute container:
+ 
   - uoload github credentials to server --> see slurm_deployment.md (with enroot, and manage )
   - srun --mem=5g (memory to be applied) --container-image=[imagename] --pty (make interactive) bash -i
-  - important: run with --container-name="name" and --container-writable because slurm doesnt clean up after we finished srun --> store the container       instance on the file system --> installing additional software
+  - important: run with --container-name="name" and --container-writable because slurm doesnt clean up after we finished srun --> store the container       
+   
+  instance on the file system --> installing additional software
   - 
   - 
