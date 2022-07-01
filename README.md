@@ -12,6 +12,10 @@ https://www.kaggle.com/datasets/kaggle/reddit-comments-may-2015
 
 https://www.kaggle.com/datasets/patjob/articlescrape
 
+Kill screen:
+
+screen -X -S [session # you want to kill] quit
+
 RUN CONTAINER: 
 srun --mem=100g --container-image=./build_ds_1.sqsh --container-name="build_dataset" --container-mounts=./Datasets:/Datasets --container-writable --pty bash -i
 
