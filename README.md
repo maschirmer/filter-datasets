@@ -25,6 +25,10 @@ srun --mem=5g --container-image=./download.sqsh --container-name="download_files
 
 # run the static filter:
 
+    import pandas as pd
+    import json
+    import static_filter
+    
     filter = StaticFilter(dataset="path_to_dataset", keywords="path_to_keywords.json")
 
     df = filter.filter()
