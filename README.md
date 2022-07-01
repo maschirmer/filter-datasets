@@ -12,18 +12,18 @@ https://www.kaggle.com/datasets/kaggle/reddit-comments-may-2015
 
 https://www.kaggle.com/datasets/patjob/articlescrape
 
-#Kill screen:
+# Kill screen:
 
 screen -X -S [session # you want to kill] quit
 
-#RUN CONTAINER: 
+# RUN CONTAINER: 
 srun --mem=100g --container-image=./build_ds_1.sqsh --container-name="build_dataset" --container-mounts=./Datasets:/Datasets --container-writable --pty bash -i
 
-#download container:
+# download container:
 
 srun --mem=5g --container-image=./download.sqsh --container-name="download_files" --container-mounts=./Datasets:/Datasets --container-writable --pty bash -i
 
-#run the static filter:
+# run the static filter:
 
     filter = StaticFilter(dataset="path_to_dataset", keywords="path_to_keywords.json")
 
@@ -32,7 +32,7 @@ srun --mem=5g --container-image=./download.sqsh --container-name="download_files
     df.to_csv("name_of_resulting_df.csv")
 
 
-#SLURM IP ADRESS = 141.54.132.206
+# SLURM IP ADRESS = 141.54.132.206
 
 this is repo for deployment of a docker image on the gammaweb cluster.
 inside the image i want to do:
