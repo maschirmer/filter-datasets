@@ -36,7 +36,11 @@ srun --mem=5g --container-image=./download.sqsh --container-name="download_files
     df.to_csv("name_of_resulting_df.csv")
 
 
-# SLURM IP ADRESS = 141.54.132.206
+# SLURM IP ADRESS
+
+141.54.132.206
+
+# Description:
 
 this is repo for deployment of a docker image on the gammaweb cluster.
 inside the image i want to do:
