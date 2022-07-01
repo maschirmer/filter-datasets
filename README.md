@@ -44,6 +44,8 @@ srun --mem=5g --container-image=./download.sqsh --container-name="download_files
 
 tar -xvf [filename]
 
+for i in *.json.bz2; do pbzip2 -vp10 "$i" ; done
+
 # Description:
 
 this is repo for deployment of a docker image on the gammaweb cluster.
