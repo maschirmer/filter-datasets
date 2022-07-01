@@ -44,7 +44,7 @@ srun --mem=5g --container-image=./download.sqsh --container-name="download_files
 
 tar -xvf [filename]
 
-for i in *.json.bz2; do pbzip2 -vp10 "$i" ; done
+find . -name "*.json.bz2" | while read filename; do pbzip2 -dvp10 "`dirname "$filename"`" "$filename"; done;
 
 # Description:
 
