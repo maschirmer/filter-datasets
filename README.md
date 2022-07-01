@@ -40,6 +40,10 @@ srun --mem=5g --container-image=./download.sqsh --container-name="download_files
 
 141.54.132.206
 
+# unpack tar and bz2 files:
+
+tar -xvf [filename]
+
 # Description:
 
 this is repo for deployment of a docker image on the gammaweb cluster.
