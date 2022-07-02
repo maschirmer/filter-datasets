@@ -12,11 +12,41 @@ https://www.kaggle.com/datasets/kaggle/reddit-comments-may-2015
 
 https://www.kaggle.com/datasets/patjob/articlescrape
 
-RUN CONTAINER: 
+# Kill screen:
+
+screen -X -S [session # you want to kill] quit
+
+# RUN CONTAINER: 
 srun --mem=100g --container-image=./build_ds_1.sqsh --container-name="build_dataset" --container-mounts=./Datasets:/Datasets --container-writable --pty bash -i
 
+# download container:
 
-SLURM IP ADRESS = 141.54.132.206
+srun --mem=5g --container-image=./download.sqsh --container-name="download_files" --container-mounts=./Datasets:/Datasets --container-writable --pty bash -i
+
+# run the static filter:
+
+    import pandas as pd
+    import json
+    import static_filter
+    
+    filter = StaticFilter(dataset="path_to_dataset", keywords="path_to_keywords.json")
+
+    df = filter.filter()
+
+    df.to_csv("name_of_resulting_df.csv")
+
+
+# SLURM IP ADRESS
+
+141.54.132.206
+
+# unpack tar and bz2 files:
+
+tar -xvf [filename]
+
+find . -name "*.json.bz2" | while read filename; do pbzip2 -dvp10 "`dirname "$filename"`" "$filename"; done;
+
+# Description:
 
 this is repo for deployment of a docker image on the gammaweb cluster.
 inside the image i want to do:
