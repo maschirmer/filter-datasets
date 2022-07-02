@@ -17,56 +17,51 @@ def getLang(text):
         l = "none"
     return l
 
-def collectres(l):
-    lang.append(l)
+def collectres(lang):
+    lang.append(lang)
 
 if __name__ == "__main__":
 
-    d = pd.read_csv(PATH + "reddit_may_2015/reddit_texts_split.csv")
+    d = pd.read_csv(PATH + "reddit_may_2015/reddit_raw_texts.csv")
     
     d.drop(["Unnamed: 0"], axis=1, inplace=True)
     ## compute the number of sentences per row
     num_sentences = []
-    
-    split_body = d["body"]
+    split_body = []
 
-    #split_body = split_body[:1000]
-    #split_body = []
-
-    # pattern = r'[.!?]'
-    # print("splitting the reddit posts...")
-    # for index, row in d.iterrows():
+    pattern = r'[.!?]'
+    print("splitting the reddit posts...")
+    for index, row in d.iterrows():
         
-    #     string = str(row["body"])
-    #     list = re.split(pattern, string)
-    #     l2 = []
+        string = str(row["body"])
+        list = re.split(pattern, string)
+        l2 = []
 
-    #     for sentence in list:
-    #         if len(sentence) > 3:
-    #             l2.append(sentence)
-    #             split_body.append(sentence)
+        for sentence in list:
+            if len(sentence) > 3:
+                l2.append(sentence)
+                split_body.append(sentence)
         
-    #     if index%10000==0:
-    #         print(index)
+        if index%10000==0:
+            print(index)
         
-    #     num_sentences.append(len(l2))
+        num_sentences.append(len(l2))
 
-    print("no of cpus to use: " + str(CPUS))
+    #print("no of cpus to use: " + str(CPUS))
     
     n = len(split_body)
-
-    pool = Pool(processes=CPUS, maxtasksperchild=1)
-
+    print(split_body[0])
     for i in range(len(split_body)):
-        
-        pool.apply_async(getLang, args=(split_body[i], ), callback=collectres)
+        try:
+            l = detect(split_body[i])
+            lang.append(l)
+        except:
+            lang.append("none")
         
         if i%100000==0:
             print("CPUS: " + str(CPUS))
             print("processed: " + str(round((i/n) * 100, 2)))
-    
-    pool.close()
-    pool.join()
+            #gc.collect()
 
 
     print(str(len(lang)))

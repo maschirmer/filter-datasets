@@ -6,7 +6,7 @@ import re
 import gc
 
 lang = []
-
+ROWS = 4400000
 PATH = "~/Datasets/"
 CPUS = multiprocessing.cpu_count()
 
@@ -22,14 +22,24 @@ def collectres(l):
 
 if __name__ == "__main__":
 
-    d = pd.read_csv(PATH + "reddit_may_2015/reddit_texts_split.csv")
+    d = pd.read_csv(PATH + "reddit_may_2015/reddit_texts_split.csv", skiprows=2*ROWS, nrows=ROWS)
     
-    d.drop(["Unnamed: 0"], axis=1, inplace=True)
+    try:
+        d.drop(d.columns[0], axis=1, inplace=True)
+        print("dropped col 0")
+    except:
+        print("columns ok!")
     ## compute the number of sentences per row
     num_sentences = []
+
+    d.columns = ["body"]
+    
+    print(d.head())
+    print(d.shape)
     
     split_body = d["body"]
 
+    print("length of splitbody list is:" + str(len(split_body)))
     #split_body = split_body[:1000]
     #split_body = []
 
@@ -78,4 +88,4 @@ if __name__ == "__main__":
     df = pd.DataFrame(df_dict)
     df = df[ df["language"] == "en" ]
     
-    df.to_csv(PATH + "temp_ds/" + "reddit_texts_language.csv")
+    df.to_csv(PATH + "temp_ds/" + "reddit_texts_language_3.csv")

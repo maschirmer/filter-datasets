@@ -6,8 +6,8 @@ import os
 import multiprocessing
 import re
 
-PATH_TO_DATA = "~/Datasets/tweets_eng/"
-
+PATH_TO_DATA = "./twitter_stream_data"
+CPUS = 64
 results = []
 
 PATTERNS = {
@@ -17,7 +17,7 @@ PATTERNS = {
     #"multi" : '([.?!/\\\\:]{2,})'
 }
 
-PATH = "C:/Users/dorrm/Desktop/M.Sc. Data Science 2021/Semester2 SoSe2022/Big Data and Language/term project/futures_dataset_creation/twitter_stream_2020_02_01"
+#PATH = "C:/Users/dorrm/Desktop/M.Sc. Data Science 2021/Semester2 SoSe2022/Big Data and Language/term project/futures_dataset_creation/twitter_stream_2020_02_01"
 
 def parseTweet(list):
     
@@ -55,28 +55,32 @@ def unpackJFile(filepath):
     return lines
 
 def computeFilepaths_json(folder):
+    
     res = []
-    datafolder = folder
     res2 = []
-    f1_names = [name for name in os.listdir(datafolder) if os.path.isdir(datafolder)]
+    
+    print(PATH_TO_DATA)
+    print(os.path.isdir(folder))
+    print(os.listdir("./twitter_stream_data"))
+    
+
+    f1_names = [name for name in os.listdir(folder)]
+    
+    print(f1_names)
+
 
     for folder1 in f1_names:
-        path = datafolder + "/" + folder1
-        subfolder_names = [name for name in os.listdir(path) if os.path.isdir(path)]
+        path = folder + "/" + folder1
+        subfolder_names = [name for name in os.listdir(path)]
         for subfolder in subfolder_names:    
             subpath = path + "/" + subfolder
             # get filenames
-            filenames = [name for name in os.listdir(subpath) if os.path.isdir(subpath)]
+            filenames = [name for name in os.listdir(subpath) ]  # if os.path.isdir(subpath)
             for file in filenames:
                 filepath = subpath + "/" + file
                 res.append(filepath)
-    
-    for result in res:
-        if result[-4:] == "json":
-            res2.append(result)
 
-    
-    return res2
+    return res
 
 def collectResults(res):
     results.extend(res)
@@ -88,18 +92,17 @@ if __name__ == '__main__':
 
     # paths of all unpacked jsonfiles
     jsonpaths = computeFilepaths_json( PATH_TO_DATA )
-    
+
     n = len(jsonpaths)
-    
     i = 0
    
-    print( "CPUs to use: " + str(multiprocessing.cpu_count()))
+    print( "CPUs to use: " + str(CPUS))
 
     for file in jsonpaths:
         
         l = unpackJFile(file)
         
-        pool = multiprocessing.Pool(processes = multiprocessing.cpu_count())
+        pool = multiprocessing.Pool(processes = CPUS, maxtasksperchild=10)
         
         pool.apply_async(parseTweet, args=(l, ), callback=collectResults)
         
@@ -118,7 +121,7 @@ if __name__ == '__main__':
     cleaned_list = []
 
     df = df.reset_index()  # make sure indexes pair with number of rows
-
+    print("cleaning the list from regex patterns")
     ## cleaning the texts
     for index, row in df.iterrows():
         val = row['0']

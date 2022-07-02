@@ -1,5 +1,7 @@
 import json
+import multiprocessing
 import pandas as pd
+from multiprocessing import Pool
 
 class StaticFilter:
     
@@ -25,6 +27,7 @@ class StaticFilter:
             d = json.load(f)
         f.close()
         
+        self.path = "~/Datasets/"
         self.stage1 = []
         
         self.stage1.extend( d["stage1"]["timerefs"] )
@@ -33,7 +36,6 @@ class StaticFilter:
 
         # not really stemmed but consider stemming based on performance of the filter
         self.stage2 = d["stage2"]["stemmed_verbs"] 
-
         self.dataset = dataset
 
     def filter(self):
@@ -41,52 +43,102 @@ class StaticFilter:
         # 1 for future related
         # 0 for for not future related
 
-        
-        df = pd.read_csv(self.dataset, index_col=0)
-        
-        texts = df["text"]
-        print(len(texts))
-        futures = []
-        k = 0
-        for i in range(len(texts)):
-            
+        def computeval(text):
             s1 = False
             s2 = False
 
             for keyword in self.stage1:
-                if keyword in texts[i]:
+                if keyword in text:
                     s1 = True
             
             if s1 == False:
-                futures.append(0)
+                return 0
             
             else:    
                 
                 for keyword in self.stage2:
-                    if keyword in texts[i]:
+                    if keyword in texts:
                         s2 = True
                 
                 if s1 == True and s2 == True:
-                    futures.append(1)
+                    return 1
                 else:
-                    futures.append(0)
-            print(k)
-            k += 1
-        if len(texts) == len(futures):
-            df["tense"] = futures
+                    return 0
 
-            return df
+        def collect(value):
+            futures.append(value)   
+
+        df = pd.read_csv(self.dataset, index_col=0)
         
-        else:
+        texts = df["text"]
+        
+        futures = []
+        
+        ## PARALLEL VERSION
+        pool = Pool(processes=multiprocessing.cpu_count(), maxtasksperchild=2)
+        
+        n = len(texts)
+        k = 0
+        
+        for i in range(len(texts)):
+            
+            pool.apply_async(computeval, args=(texts[i], ), callback=collect)
+            
+            if k%1000==0:
+                print("processed: " + str(round( (k/n) * 100, 2) ))
+            k += 1
+            
+        pool.close()
+        pool.join()  
+        
+        df_dict = {"text": texts, "tense":futures}
+        
+        df_result = pd.DataFrame(df_dict)
 
-            return pd.DataFrame(columns=["text"])
+        return df_result
 
+        # SEQUENTIAL VERSION 
+        #     s1 = False
+        #     s2 = False
+
+        #     for keyword in self.stage1:
+        #         if keyword in texts[i]:
+        #             s1 = True
+            
+        #     if s1 == False:
+        #         futures.append(0)
+            
+        #     else:    
+                
+        #         for keyword in self.stage2:
+        #             if keyword in texts[i]:
+        #                 s2 = True
+                
+        #         if s1 == True and s2 == True:
+        #             futures.append(1)
+        #         else:
+        #             futures.append(0)
+            
+        #     # print processed percentage
+        #     if k%1000==0:
+        #         print("processed: " + str(round( (k/n) * 100, 2) ))
+
+        #     k += 1
+        # if len(texts) == len(futures):
+        #     print("length of classification matches the dataframe!")
+        #     df["tense"] = futures
+
+        #     return df
+        
+        # else:
+
+        #     return pd.DataFrame(columns=["text"])
 
 
 if __name__ == "__main__":
     
 
-    filter = StaticFilter("./english_tweets/cleaned_tweets_eng.csv", keywords="./english_tweets/keywords.json")
+    filter = StaticFilter(dataset="./english_tweets/cleaned_tweets_eng.csv", keywords="./english_tweets/keywords.json")
 
     df = filter.filter()
 
