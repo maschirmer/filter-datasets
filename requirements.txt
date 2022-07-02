@@ -1,3 +1,5 @@
+pathlib2==2.3.7.post1
+spacy==3.3.1
 pandas
 numpy
 langdetect
