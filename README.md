@@ -16,9 +16,14 @@ https://www.kaggle.com/datasets/patjob/articlescrape
 
 screen -X -S [session # you want to kill] quit
 
+# get and build container
+
+srun --mem=32g enroot import --output build_ds_310.sqsh docker://ghcr.io#maschirmer/filter-datasets:main
+
 # RUN CONTAINER: 
 srun --mem=100g --container-image=./build_ds_1.sqsh --container-name="build_dataset" --container-mounts=./Datasets:/Datasets --container-writable --pty bash -i
 
+srun --mem=50g --container-image=./build_ds_310.sqsh --container-name="build_dataset310" --container-mounts=./Datasets:/Datasets --container-writable --pty bash -i
 # download container:
 
 srun --mem=5g --container-image=./download.sqsh --container-name="download_files" --container-mounts=./Datasets:/Datasets --container-writable --pty bash -i
