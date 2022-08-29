@@ -8,5 +8,5 @@ build.ipynb
 build_raw_from_sqlite.ipynb
 
 # directories
-splitting_and_langdetect/
-static_filter/
+/splitting_and_langdetect
+/static_filter
