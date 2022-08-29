@@ -42,97 +42,114 @@ class StaticFilter:
         # takes the dataset as input and outputs a dictionary {text:future}, where: 
         # 1 for future related
         # 0 for for not future related
+        
+        # PARALLEL VERSION:
 
-        def computeval(text):
-            s1 = False
-            s2 = False
-
-            for keyword in self.stage1:
-                if keyword in text:
-                    s1 = True
-            
-            if s1 == False:
-                return 0
-            
-            else:    
-                
-                for keyword in self.stage2:
-                    if keyword in texts:
-                        s2 = True
-                
-                if s1 == True and s2 == True:
-                    return 1
-                else:
-                    return 0
-
-        def collect(value):
-            futures.append(value)   
-
-        df = pd.read_csv(self.dataset, index_col=0)
-        
-        texts = df["text"]
-        
-        futures = []
-        
-        ## PARALLEL VERSION
-        pool = Pool(processes=multiprocessing.cpu_count(), maxtasksperchild=2)
-        
-        n = len(texts)
-        k = 0
-        
-        for i in range(len(texts)):
-            
-            pool.apply_async(computeval, args=(texts[i], ), callback=collect)
-            
-            if k%1000==0:
-                print("processed: " + str(round( (k/n) * 100, 2) ))
-            k += 1
-            
-        pool.close()
-        pool.join()  
-        
-        df_dict = {"text": texts, "tense":futures}
-        
-        df_result = pd.DataFrame(df_dict)
-
-        return df_result
-
-        # SEQUENTIAL VERSION 
+        # def computeval(text):
         #     s1 = False
         #     s2 = False
 
         #     for keyword in self.stage1:
-        #         if keyword in texts[i]:
+        #         if keyword in text:
         #             s1 = True
             
         #     if s1 == False:
-        #         futures.append(0)
+        #         return 0
             
         #     else:    
                 
         #         for keyword in self.stage2:
-        #             if keyword in texts[i]:
+        #             if keyword in texts:
         #                 s2 = True
                 
         #         if s1 == True and s2 == True:
-        #             futures.append(1)
+        #             return 1
         #         else:
-        #             futures.append(0)
+        #             return 0
+
+        # def collect(value):
+        #     futures.append(value)   
+
+        # df = pd.read_csv(self.dataset, index_col=0)
+        
+        # texts = df["text"]
+        
+        # futures = []
+        
+        # ## PARALLEL VERSION
+        # pool = Pool(processes=multiprocessing.cpu_count(), maxtasksperchild=2)
+        
+        # n = len(texts)
+        # k = 0
+        
+        # for i in range(len(texts)):
             
-        #     # print processed percentage
+        #     pool.apply_async(computeval, args=(texts[i], ), callback=collect)
+            
         #     if k%1000==0:
         #         print("processed: " + str(round( (k/n) * 100, 2) ))
-
         #     k += 1
-        # if len(texts) == len(futures):
-        #     print("length of classification matches the dataframe!")
-        #     df["tense"] = futures
-
-        #     return df
+            
+        # pool.close()
+        # pool.join()  
         
-        # else:
+        # df_dict = {"text": texts, "tense":futures}
+        
+        # df_result = pd.DataFrame(df_dict)
 
-        #     return pd.DataFrame(columns=["text"])
+        # return df_result
+
+        # SEQUENTIAL VERSION:
+        df = pd.read_csv(self.dataset)
+        try:
+            df.drop(["Unnamed: 0"], axis=1, inplace=True)
+            print("dropped unnamed")
+        except:
+            print("columns ok")
+        
+        texts = df["text"]
+        
+        print(len(texts))
+        
+        futures = []
+        k = 0
+        for i in range(len(texts)):
+            try:
+                s1 = False
+                s2 = False
+
+                for keyword in self.stage1:
+                    if keyword in texts[i]:
+                        s1 = True
+                
+                if s1 == False:
+                    futures.append(0)
+                
+                else:    
+                    
+                    for keyword in self.stage2:
+                        if keyword in texts[i]:
+                            s2 = True
+                    
+                    if s1 == True and s2 == True:
+                        futures.append(1)
+                    else:
+                        futures.append(0)
+            except:
+                futures.append(0)
+            
+            print(k)
+            k += 1
+        ## end of loop
+        
+        if len(texts) == len(futures):
+            
+            df["tense"] = futures
+            return df
+        
+        else:
+            print("returning empty df")
+            return pd.DataFrame(columns=["text"])
 
 
 if __name__ == "__main__":
@@ -142,7 +159,7 @@ if __name__ == "__main__":
 
     df = filter.filter()
 
-    df.to_csv("twitter_statements_tenses.csv")
+    df.to_csv("statements_tenses.csv")
 
 
 

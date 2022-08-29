@@ -2,8 +2,6 @@ import pandas as pd
 from langdetect import detect
 from multiprocessing import Pool
 import multiprocessing
-import re
-import gc
 from nltk import sent_tokenize
 
 lang = []
@@ -41,24 +39,6 @@ if __name__ == "__main__":
         if index%10000==0:
             print(index)
 
-    # Re sentence tokenize
-    # pattern = r'[.!?]'
-    # print("splitting the reddit posts...")
-    # for index, row in d.iterrows():
-        
-    #     string = str(row["body"])
-    #     list = re.split(pattern, string)
-    #     l2 = []
-
-    #     for sentence in list:
-    #         if len(sentence) > 3:
-    #             l2.append(sentence)
-    #             split_body.append(sentence)
-        
-    #     if index%10000==0:
-    #         print(index)
-        
-    #     num_sentences.append(len(l2))
 
     dataf = pd.DataFrame(split_body, columns=["body"])
     dataf.to_csv("./reddit_texts_split.csv")

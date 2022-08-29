@@ -2,8 +2,6 @@ import pandas as pd
 from langdetect import detect
 from multiprocessing import Pool
 import multiprocessing
-import re
-import gc
 
 lang = []
 
@@ -30,26 +28,6 @@ if __name__ == "__main__":
     
     split_body = d["body"]
 
-    #split_body = split_body[:1000]
-    #split_body = []
-
-    # pattern = r'[.!?]'
-    # print("splitting the reddit posts...")
-    # for index, row in d.iterrows():
-        
-    #     string = str(row["body"])
-    #     list = re.split(pattern, string)
-    #     l2 = []
-
-    #     for sentence in list:
-    #         if len(sentence) > 3:
-    #             l2.append(sentence)
-    #             split_body.append(sentence)
-        
-    #     if index%10000==0:
-    #         print(index)
-        
-    #     num_sentences.append(len(l2))
 
     print("no of cpus to use: " + str(CPUS))
     

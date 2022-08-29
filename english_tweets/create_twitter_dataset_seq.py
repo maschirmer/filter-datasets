@@ -1,9 +1,7 @@
 
-from multiprocessing import Pool
 import pandas as pd
 import json
 import os
-import multiprocessing
 import re
 
 PATH_TO_DATA = "./twitter_stream_data"
@@ -91,41 +89,36 @@ if __name__ == '__main__':
 
 
     # paths of all unpacked jsonfiles
+    print("computing filepaths ...")
     jsonpaths = computeFilepaths_json( PATH_TO_DATA )
 
     n = len(jsonpaths)
-    i = 0
-   
-    print( "CPUs to use: " + str(CPUS))
+    k = 0
 
+    print("starting extraction of english tweets...")
     for file in jsonpaths:
-        
-        l = unpackJFile(file)
-        
-        pool = multiprocessing.Pool(processes = CPUS, maxtasksperchild=10)
-        
-        pool.apply_async(parseTweet, args=(l, ), callback=collectResults)
-        
-        pool.close()
-        pool.join()
 
-        if i%10 == 0:
-            print("processed: " + str( round( (i/n)*100, 2 )) + "%")
-        
-        i += 1
+        for i in range(len(file)):
+            try:
+                if file[i]["lang"] == "en":    
+                    try:
+                        results.append(file[i]["text"])
+                    except:  
+                        print("no text or timestemp info")
+            except:
+                continue
 
-    df = pd.DataFrame(results)
+
+        print("processed: " + str( round( (k/n)*100, 2 )) + "%")
+        k += 1
     
     ## clean texts from timestamp
 
     cleaned_list = []
-
-    df = df.reset_index()  # make sure indexes pair with number of rows
-    print("cleaning the list from regex patterns")
+    print("cleaning the list from regex patterns ...")
     ## cleaning the texts
-    for index, row in df.iterrows():
-        val = row['0']
-        
+    for r in results:
+        val = r
         for p in list(PATTERNS.keys()):
          val = re.sub(PATTERNS[p], "", val)
         

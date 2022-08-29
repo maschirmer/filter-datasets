@@ -23,6 +23,27 @@ srun --mem=100g --container-image=./build_ds_1.sqsh --container-name="build_data
 
 srun --mem=5g --container-image=./download.sqsh --container-name="download_files" --container-mounts=./Datasets:/Datasets --container-writable --pty bash -i
 
+# warc dl -example
+
+docker pull ghcr.io/webis-de/warc-dl:master
+
+srun --mem=32g enroot import --output warcdl.sqsh docker://ghcr.io#webis-de/warc-dl:master
+
+srun --mem=15g --container-image=./warcdl.sqsh --container-name="warcdl_1" --container-mounts=./WARC-DL:/WARC-DL --container-writable --pty bash -i
+
+- run with gpu
+
+srun --mem=15g --gres=gpu:1g.5gb --container-image=./warcdl.sqsh --container-name="warcdl_1" --container-mounts=./WARC-DL:/WARC-DL --container-writable --pty bash -i
+
+PYTHONPATH=. HADOOP_CONF_DIR=./hadoop/ HADOOP_USER_NAME=ms19hove \
+python3 examples/meme_classifier/meme_classifier_pipeline.py
+
+
+PYTHONPATH=. HADOOP_CONF_DIR=./hadoop/ HADOOP_USER_NAME=ms19hove \
+python3 examples/hatespeech_classifier/hatespeech_twitter_pipeline.py
+
+-edit the example hatespeech pipeline for maximum content length of 10 000
+
 # run the static filter:
 
     import pandas as pd
