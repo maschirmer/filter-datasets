@@ -6,7 +6,9 @@ This repo creates training dataset used for training of the BERT future referenc
 - blogs and news dataset from kaggle
 
 there are sequential versions of the extraction scripts an parallel ones
+
 parallel ones produced a lot out of memory errors which were hard to fix as running them on the cluster
+
 maybe use spark instances instead of multiprocessing nex time
 
 texts are extracted from the files and stored into csv files
