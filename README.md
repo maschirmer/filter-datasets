@@ -11,9 +11,9 @@ parallel ones produced a lot out of memory errors which were hard to fix as runn
 
 maybe use spark instances instead of multiprocessing nex time
 
-texts are extracted from the files and stored into csv files
-
-from the csv files equal proportions of texts are sampled
-data is filtered for english language
-data is shuffled
-"source" - tag is annotated
+coarse steps:
+- texts are extracted from the files and stored into csv files
+- from the csv files equal proportions of texts are sampled
+- data is filtered for english language
+- data is shuffled
+- "source" - tag is annotated
